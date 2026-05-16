@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JMD Computer Center | Home & Student Portal</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; scroll-behavior: smooth; }
@@ -34,6 +34,7 @@
         .btn-blue { background: #0284c7; color: white; border: none; padding: 14px 30px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4); display: inline-block; text-decoration: none; text-align: center; }
         .btn-blue:hover { background: #0369a1; transform: translateY(-2px); }
         
+        /* Apply Online বাটনটিকে Check Live Status এর মতো একই কালার টোন দেওয়া হলো */
         .btn-outline { background: #0284c7; color: white; border: none; padding: 14px 30px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4); display: inline-block; text-decoration: none; text-align: center; }
         .btn-outline:hover { background: #0369a1; transform: translateY(-2px); }
 
@@ -97,12 +98,13 @@
         .cancel-txt { margin-top: 25px; cursor: pointer; color: #ef4444; font-weight: 600; font-size: 13px; opacity: 0.8; transition: 0.2s; display: inline-block; }
         .cancel-txt:hover { opacity: 1; transform: scale(1.05); }
 
-        /* Premium Admission Modal UI */
+        /* Premium Admission Modal UI (পোর্টালে সাদা ব্যাকগ্রাউন্ড ঢাকতে থিম ম্যাচিং করা হয়েছে) */
         .admission-container { width: 100%; max-width: 950px; background: #151d30; border-radius: 24px; border: 1px solid #24324f; box-shadow: 0 25px 60px rgba(0,0,0,0.7), 0 0 0 1px rgba(56, 189, 248, 0.2); position: relative; overflow: hidden; transform: scale(0.95); animation: modalEntry 0.3s forwards cubic-bezier(0.16, 1, 0.3, 1); }
         .admission-header-bar { background: #0b0f19; border-bottom: 2px dashed #24324f; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
         .admission-header-bar h3 { color: #38bdf8; font-size: 22px; font-weight: 700; letter-spacing: -0.5px; }
         .admission-header-bar h3 span { color: #f59e0b; font-size: 14px; margin-right: 8px; vertical-align: middle; }
         
+        /* গুগল ফর্মের চারপাশের অতিরিক্ত সাদা অংশ ঢাকতে এই র‍্যাপার কন্টেইনারটিকে ডার্ক থিমে সাজানো হয়েছে */
         .admission-iframe-wrapper { background: #151d30; padding: 10px; margin: 20px; border-radius: 16px; overflow: hidden; height: 75vh; border: 2px solid #24324f; box-shadow: inset 0 4px 10px rgba(0,0,0,0.4); -webkit-overflow-scrolling: touch; }
         .admission-iframe-wrapper iframe { border-radius: 12px; background: #ffffff; }
         
@@ -111,14 +113,13 @@
 
         @keyframes modalEntry { to { transform: scale(1); } }
 
-        /* Admin Control Portal (গুগল শীটের মোবাইল স্ক্রলিং ফিক্স করা হয়েছে) */
-        #admin-portal { display: none; background: #0b0f19; min-height: 100vh; padding: 20px; overflow: hidden; position: fixed; top: 0; left: 0; width: 100%; z-index: 9999; }
+        /* Admin Control Portal */
+        #admin-portal { display: none; background: #0b0f19; min-height: 100vh; padding: 20px; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #151d30; padding: 18px 30px; border-radius: 16px; color: white; border: 1px solid #24324f; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
         .admin-header h3 { font-size: 20px; font-weight: 700; }
-        
-        /* এই কন্টেইনারটি মোবাইলে শীটকে এক জায়গায় লক রাখবে এবং স্মুথ নিজস্ব স্ক্রোল দেবে */
-        .admin-iframe-container { border-radius: 16px; overflow: auto; border: 2px solid #24324f; background: #fff; height: 80vh; box-shadow: 0 15px 40px rgba(0,0,0,0.5); -webkit-overflow-scrolling: touch; }
-        .admin-iframe-container iframe { width: 100%; height: 100%; min-width: 1024px; border: none; }
+        .admin-iframe-container { border-radius: 16px; overflow: hidden; border: 2px solid #24324f; background: #fff; height: 82vh; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+        .logout-btn { padding: 10px 22px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2); }
+        .logout-btn:hover { background: #dc2626; transform: translateY(-1px); }
 
         /* Advanced Responsive Layout Design for Mobile Compatibility */
         @media (max-width: 768px) {
@@ -150,14 +151,11 @@
             .admission-header-bar { padding: 15px 20px; }
             .admission-header-bar h3 { font-size: 16px; }
             
+            /* মোবাইলে যাতে ফর্ম ও লেখাগুলো সুন্দর স্ক্রোল হয় এবং বড় দেখায় */
             .admission-iframe-wrapper { margin: 10px; height: 78vh; padding: 4px; background: #151d30; }
-            
-            /* মোবাইল অ্যাডমিন ভিউ অপ্টিমাইজেশন */
-            #admin-portal { padding: 10px; }
-            .admin-header { flex-direction: row; justify-content: space-between; gap: 10px; text-align: left; padding: 12px 20px; margin-bottom: 10px; }
-            .admin-header h3 { font-size: 15px; }
-            .logout-btn { padding: 8px 14px; font-size: 13px; }
-            .admin-iframe-container { height: 84vh; border-radius: 12px; }
+            .admin-header { flex-direction: column; gap: 12px; text-align: center; padding: 15px; }
+            .admin-portal { padding: 10px; }
+            .admin-iframe-container { height: 78vh; }
         }
     </style>
 </head>
@@ -286,11 +284,11 @@
 <div id="admin-portal">
     <div style="max-width: 1500px; margin: auto;">
         <div class="admin-header">
-            <h3><span style="color: #f59e0b;">●</span> JMD Admin</h3>
-            <button class="logout-btn" onclick="handleLogout()">Logout Session</button>
+            <h3><span style="color: #f59e0b;">●</span> JMD Admin Control Center</h3>
+            <button class="logout-btn" onclick="location.reload()">Logout Session</button>
         </div>
         <div class="admin-iframe-container">
-            <iframe src="https://docs.google.com/spreadsheets/d/1yYfigTDzNTH77hMWHy5MQK5MYI-eoJbpYvEBFkHW75k/edit?usp=sharing"></iframe>
+            <iframe src="https://docs.google.com/spreadsheets/d/1yYfigTDzNTH77hMWHy5MQK5MYI-eoJbpYvEBFkHW75k/edit?usp=sharing" style="width:100%; height: 100%; border:none;"></iframe>
         </div>
     </div>
 </div>
@@ -380,21 +378,11 @@
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('main-website').style.display = 'none';
             document.getElementById('admin-portal').style.display = 'block';
-            
-            // মোবাইল স্ক্রিন যাতে একদম লক হয়ে যায় এবং শুধু শীটটাই স্ক্রোল হয়
-            document.body.style.position = 'fixed';
-            document.body.style.width = '100%';
         } else {
             alert("Invalid Password!");
             document.getElementById('adminPass').value = '';
             document.getElementById('adminPass').focus();
         }
-    }
-
-    function handleLogout() {
-        document.body.style.position = '';
-        document.body.style.width = '';
-        location.reload();
     }
 
     window.onload = function() { 
