@@ -285,50 +285,49 @@
 </div>
 
 <script>
-    // 🔒 এনক্রিপ্টেড ডাটা এবং ইউআরএল লজিক (Hexadecimal Encoding)
-    const _0x4f12 = ['\x68\x74\x74\x70\x73\x3a\x2f\x2f\x73\x63\x72\x69\x70\x74\x2e\x67\x6f\x6f\x67\x6c\x65\x2e\x63\x6f\x6d\x2f\x6d\x61\x63\x72\x6f\x73\x2f\x73\x2f\x41\x4b\x66\x79\x63\x62\x77\x42\x42\x2d\x74\x66\x50\x47\x4a\x5f\x6b\x32\x43\x57\x67\x62\x79\x78\x46\x6c\x76\x51\x33\x44\x32\x44\x35\x75\x36\x79\x34\x65\x31\x76\x57\x44\x66\x57\x44\x66\x77\x54\x4c\x54\x47\x35\x42\x76\x61\x31\x46\x30\x4a\x30\x5f\x2d\x5a\x64\x6b\x78\x44\x4c\x73\x74\x71\x4e\x77\x2f\x65\x78\x65\x63', '\x76\x61\x6C\x75\x65', '\x74\x72\x69\x6D', '\x67\x65\x74\x45\x6C\x65\x6D\x65\x6E\x74\x42\x79\x49\x64', '\x73\x65\x61\x72\x63\x68\x49\x6E\x70\x75\x74', '\x6C\x6F\x61\x64\x65\x72', '\x65\x72\x72\x6F\x72', '\x72\x65\x73\x75\x6C\x74\x43\x61\x72\x64', '\x73\x74\x79\x6C\x65', '\x64\x69\x73\x70\x6C\x61\x79', '\x62\x6C\x6F\x63\x6B', '\x50\x6C\x65\x61\x73\x65\x20\x65\x6E\x74\x65\x72\x20\x61\x20\x6E\x61\x6D\x65\x20\x6F\x72\x20\x6D\x6F\x62\x69\x6C\x65\x20\x6E\x75\x6D\x62\x65\x72\x21', '\x6E\x6F\x6E\x65', '\x66\x65\x74\x63\x68', '\x69\x6E\x63\x6C\x75\x64\x65\x73', '\xED\x98\xAC\xEC\xAA\xAD\xED\x90\xAC', '\x6A\x73\x6F\x6E', '\x61\x75\x74\x68\x65\x6E\x74\x69\x63\x61\x74\x65\x64', '\x49\x6E\x76\x61\x6C\x69\x64\x20\x50\x61\x73\x73\x77\x6F\x72\x64\x21', '\x61\x64\x6D\x69\x6E\x51\x61\x73\x73', '\x2E\x75\x6E\x6C\x6F\x63\x6B\x2D\x62\x74\x6E', '\x71\x75\x65\x72\x79\x53\x65\x6C\x65\x63\x74\x6F\x72', '\x69\x6E\x6E\x65\x72\x54\x65\x78\x74', '\x56\x65\x72\x69\x66\x79\x69\x6E\x67\x2E\x2E\x2E', '\x64\x69\x73\x61\x62\x6C\x65\x64', '\x6C\x6F\x67\x69\x6E\x2D\x73\x63\x72\x65\x6E', '\x6D\x61\x69\x6E\x2D\x77\x65\x62\x73\x69\x74\x65', '\x61\x64\x6D\x69\x6E\x2D\x70\x6F\x72\x74\x61\x6C'];
-    const webAppUrl = _0x4f12[0];
+    // 🔗 আপনার জেনারেট করা নতুন Apps Script Web App URL-টি এই নিচের সিঙ্গেল কোটেশনের ভেতরে বসিয়ে দিন:
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbwBB-tfPGJ_k2CWgbyxFlvQ3D2D5u6y4e1vWDfWDfwTLTG5Bva1F0J0_-ZDkxpDLstqNw/exec';
 
     // ১. সার্চ ফাংশনালিটি
     async function startSearch() { 
-        const query = document[_0x4f12[3]](_0x4f12[4])[_0x4f12[1]][_0x4f12[2]](); 
-        const loader = document[_0x4f12[3]](_0x4f12[5]); 
-        const error = document[_0x4f12[3]](_0x4f12[6]); 
-        const card = document[_0x4f12[3]](_0x4f12[7]); 
+        const query = document.getElementById('searchInput').value.trim(); 
+        const loader = document.getElementById('loader'); 
+        const error = document.getElementById('error'); 
+        const card = document.getElementById('resultCard'); 
         
-        if (!query) return alert(_0x4f12[11]); 
+        if (!query) return alert("Please enter a name or mobile number!"); 
         
-        loader[_0x4f12[8]][_0x4f12[9]] = _0x4f12[10]; 
-        error[_0x4f12[8]][_0x4f12[9]] = _0x4f12[12]; 
-        card[_0x4f12[8]][_0x4f12[9]] = _0x4f12[12]; 
+        loader.style.display = 'block'; 
+        error.style.display = 'none'; 
+        card.style.display = 'none'; 
         
         try { 
             const response = await fetch(`${webAppUrl}?q=${encodeURIComponent(query)}`); 
-            const result = await response[_0x4f12[16]](); 
+            const result = await response.json(); 
             
-            if (result.message && result.message[_0x4f12[14]](_0x4f12[15])) { 
-                loader[_0x4f12[8]][_0x4f12[9]] = _0x4f12[12]; 
+            if (result.message && result.message.includes("স্থগিত")) { 
+                loader.style.display = 'none'; 
                 error.innerText = result.message; 
-                error[_0x4f12[8]][_0x4f12[9]] = _0x4f12[10]; 
+                error.style.display = 'block'; 
                 return; 
             } 
             
             if (!result.success) { 
-                loader[_0x4f12[8]][_0x4f12[9]] = _0x4f12[12]; 
+                loader.style.display = 'none'; 
                 error.innerText = "No records found! Please check your spelling or mobile number and try again."; 
-                error[_0x4f12[8]][_0x4f12[9]] = _0x4f12[10]; 
+                error.style.display = 'block'; 
                 return;
             } 
             
             const student = result.data; 
-            document[_0x4f12[3]]('studentName').innerText = student.name; 
-            document[_0x4f12[3]]('studentId').innerText = "ID: " + student.id; 
-            document[_0x4f12[3]]('studentMobile').innerText = student.mobile; 
-            document[_0x4f12[3]]('studentCourse').innerText = student.course; 
-            document[_0x4f12[3]]('studentAdmission').innerText = student.admission || "N/A"; 
-            document[_0x4f12[3]]('studentAttendance').innerText = (student.totalAttendance || 0) + " Days"; 
+            document.getElementById('studentName').innerText = student.name; 
+            document.getElementById('studentId').innerText = "ID: " + student.id; 
+            document.getElementById('studentMobile').innerText = student.mobile; 
+            document.getElementById('studentCourse').innerText = student.course; 
+            document.getElementById('studentAdmission').innerText = student.admission || "N/A"; 
+            document.getElementById('studentAttendance').innerText = (student.totalAttendance || 0) + " Days"; 
             
-            const payBadge = document[_0x4f12[3]]('studentPayment'); 
+            const payBadge = document.getElementById('studentPayment'); 
             if (student.lastPayment === "No Record" || !student.lastPayment) { 
                 payBadge.innerText = "No Record"; 
                 payBadge.className = "badge unpaid"; 
@@ -341,76 +340,78 @@
                 payBadge.className = "badge paid"; 
             } 
             
-            loader[_0x4f12[8]][_0x4f12[9]] = _0x4f12[12]; 
-            card[_0x4f12[8]][_0x4f12[9]] = _0x4f12[10]; 
+            loader.style.display = 'none'; 
+            card.style.display = 'block'; 
         } catch (err) { 
-            loader[_0x4f12[8]][_0x4f12[9]] = _0x4f12[12]; 
-            error[_0x4f12[8]][_0x4f12[9]] = _0x4f12[10]; 
+            loader.style.display = 'none'; 
+            error.style.display = 'block'; 
         } 
     }
 
-    // এন্টার কী সার্চ লিসেনার
-    document[_0x4f12[3]]("searchInput").addEventListener("keyup", function(e) { 
+    // এন্টার কী দিয়ে সার্চ করার সুবিধা
+    document.getElementById("searchInput").addEventListener("keyup", function(e) { 
         if (e.key === "Enter") startSearch(); 
     });
 
-    // পপআপ স্ক্রিন কন্ট্রোল (সরাসরি ক্লিক ইভেন্ট সাপোর্ট)
+    // অ্যাডমিশন পপআপ ওপেন/ক্লোজ
     function showAdmission() { 
-        document[_0x4f12[3]]('admission-screen')[_0x4f12[8]][_0x4f12[9]] = 'flex'; 
-        document.body[_0x4f12[8]].overflow = 'hidden'; 
+        document.getElementById('admission-screen').style.display = 'flex'; 
+        document.body.style.overflow = 'hidden'; 
     } 
     function hideAdmission() { 
-        document[_0x4f12[3]]('admission-screen')[_0x4f12[8]][_0x4f12[9]] = _0x4f12[12]; 
-        document.body[_0x4f12[8]].overflow = 'auto'; 
-    }
-    function showLogin() { 
-        document[_0x4f12[3]]('login-screen')[_0x4f12[8]][_0x4f12[9]] = 'flex'; 
-        document[_0x4f12[3]]('adminPass').focus(); 
-    } 
-    function hideLogin() { 
-        document[_0x4f12[3]]('login-screen')[_0x4f12[8]][_0x4f12[9]] = _0x4f12[12]; 
-        document[_0x4f12[3]]('adminPass')[_0x4f12[1]] = ''; 
+        document.getElementById('admission-screen').style.display = 'none'; 
+        document.body.style.overflow = 'auto'; 
     }
 
-    // স্টাফ ড্যাশবোর্ড ব্যাকএন্ড ভেরিফিকেশন লজিক
+    // লগইন পপআপ ওপেন/ক্লোজ
+    function showLogin() { 
+        document.getElementById('login-screen').style.display = 'flex'; 
+        document.getElementById('adminPass').focus(); 
+    } 
+    function hideLogin() { 
+        document.getElementById('login-screen').style.display = 'none'; 
+        document.getElementById('adminPass').value = ''; 
+    }
+
+    // সিকিউর লগইন সিস্টেম (ব্যাকএন্ড ভেরিফিকেশন)
     async function handleLogin() { 
-        const passwordInput = document[_0x4f12[3]]('adminPass')[_0x4f12[1]]; 
+        const passwordInput = document.getElementById('adminPass').value; 
         if (!passwordInput) return alert("Please enter password!"); 
         
-        const unlockBtn = document[_0x4f12[21]](_0x4f12[20]); 
-        const originalText = unlockBtn[_0x4f12[22]]; 
-        unlockBtn[_0x4f12[22]] = _0x4f12[23]; 
-        unlockBtn[_0x4f12[24]] = true; 
+        const unlockBtn = document.querySelector('.unlock-btn'); 
+        const originalText = unlockBtn.innerText; 
+        unlockBtn.innerText = "Verifying..."; 
+        unlockBtn.disabled = true; 
         
         try { 
             const response = await fetch(`${webAppUrl}?checkPass=${encodeURIComponent(passwordInput)}`); 
-            const result = await response[_0x4f12[16]](); 
+            const result = await response.json(); 
             
-            if (result[_0x4f12[17]] === true) { 
-                document[_0x4f12[3]](_0x4f12[25])[_0x4f12[8]][_0x4f12[9]] = _0x4f12[12]; 
-                document[_0x4f12[3]](_0x4f12[26])[_0x4f12[8]][_0x4f12[9]] = _0x4f12[12]; 
-                document[_0x4f12[3]](_0x4f12[27])[_0x4f12[8]][_0x4f12[9]] = _0x4f12[10]; 
+            if (result.authenticated === true) { 
+                document.getElementById('login-screen').style.display = 'none'; 
+                document.getElementById('main-website').style.display = 'none'; 
+                document.getElementById('admin-portal').style.display = 'block'; 
             } else { 
-                alert(_0x4f12[18]); 
-                document[_0x4f12[3]]('adminPass').focus(); 
+                alert("Invalid Password!"); 
+                document.getElementById('adminPass').focus(); 
             } 
         } catch (err) { 
             alert("Connection error! Please check your Web App URL."); 
         } finally { 
-            unlockBtn[_0x4f12[22]] = originalText; 
-            unlockBtn[_0x4f12[24]] = false; 
+            unlockBtn.innerText = originalText; 
+            unlockBtn.disabled = false; 
         } 
     }
 
-    // পাসওয়ার্ড ফিল্ড এন্টার লিসেনার
-    document[_0x4f12[3]]("adminPass").addEventListener("keyup", function(e) { 
+    // পাসওয়ার্ড ফিল্ডে এন্টার মারলে সরাসরি লগইন হবে
+    document.getElementById("adminPass").addEventListener("keyup", function(e) { 
         if (e.key === "Enter") handleLogin(); 
     });
 
-    // পেজ ইনিশিয়ালাইজেশন
+    // পেজ লোড হওয়ার সময় পপআপগুলো বন্ধ থাকবে
     window.onload = function() { 
-        document[_0x4f12[3]]('login-screen')[_0x4f12[8]][_0x4f12[9]] = _0x4f12[12]; 
-        document[_0x4f12[3]]('admission-screen')[_0x4f12[8]][_0x4f12[9]] = _0x4f12[12]; 
+        document.getElementById('login-screen').style.display = 'none'; 
+        document.getElementById('admission-screen').style.display = 'none'; 
     }
 </script>
 </body>
