@@ -285,8 +285,7 @@
 </div>
 
 <script>
-    // 🔗 আপনার জেনারেট করা নতুন Apps Script Web App URL-টি এই নিচের সিঙ্গেল কোটেশনের ভেতরে বসিয়ে দিন:
-    const webAppUrl = 'https://script.google.com/macros/s/AKfycbwBB-tfPGJ_k2CWgbyxFlvQ3D2D5u6y4e1vWDfWDfwTLTG5Bva1F0J0_-ZDkxpDLstqNw/exec';
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbyKcbsL_X2wCihKjFL_ozfmjjnLyJCaHy2i9Jtzd09ZIxQtl0wncvki5xdeqbuMk_wUZQ/exec';
 
     // ১. সার্চ ফাংশনালিটি
     async function startSearch() { 
@@ -348,7 +347,7 @@
         } 
     }
 
-    // এন্টার কী দিয়ে সার্চ করার সুবিধা
+    // এন্টার কী দিয়ে সার্চ করার সুবিধা
     document.getElementById("searchInput").addEventListener("keyup", function(e) { 
         if (e.key === "Enter") startSearch(); 
     });
@@ -373,7 +372,7 @@
         document.getElementById('adminPass').value = ''; 
     }
 
-    // সিকিউর লগইন সিস্টেম (ব্যাকএন্ড ভেরিফিকেশন)
+    // সিকিউর লগইন সিস্টেম
     async function handleLogin() { 
         const passwordInput = document.getElementById('adminPass').value; 
         if (!passwordInput) return alert("Please enter password!"); 
@@ -386,6 +385,11 @@
         try { 
             const response = await fetch(`${webAppUrl}?checkPass=${encodeURIComponent(passwordInput)}`); 
             const result = await response.json(); 
+            
+            if (result.success === false && result.message) {
+                alert(result.message); 
+                return;
+            } 
             
             if (result.authenticated === true) { 
                 document.getElementById('login-screen').style.display = 'none'; 
@@ -403,12 +407,12 @@
         } 
     }
 
-    // পাসওয়ার্ড ফিল্ডে এন্টার মারলে সরাসরি লগইন হবে
+    // পাসওয়ার্ড ফিল্ডে এন্টার মারলে সরাসরি লগইন হবে
     document.getElementById("adminPass").addEventListener("keyup", function(e) { 
         if (e.key === "Enter") handleLogin(); 
     });
 
-    // পেজ লোড হওয়ার সময় পপআপগুলো বন্ধ থাকবে
+    // পেজ লোড হওয়ার সময় পপআপগুলো বন্ধ থাকবে
     window.onload = function() { 
         document.getElementById('login-screen').style.display = 'none'; 
         document.getElementById('admission-screen').style.display = 'none'; 
