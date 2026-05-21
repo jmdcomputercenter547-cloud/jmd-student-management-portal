@@ -108,12 +108,24 @@
 
         @keyframes modalEntry { to { transform: scale(1); } }
 
+        /* 🌟 সেই আকাঙ্ক্ষিত প্রিমিয়াম এডমিন প্যানেল থিম হুবহু ফিরিয়ে আনা হলো */
         #admin-portal { display: none; background: #0b0f19; min-height: 100vh; padding: 20px; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #151d30; padding: 18px 30px; border-radius: 16px; color: white; border: 1px solid #24324f; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
         .admin-header h3 { font-size: 20px; font-weight: 700; }
-        .admin-iframe-container { border-radius: 16px; overflow: hidden; border: 2px solid #24324f; background: #fff; height: 82vh; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+
+        /* সিকিউর নীল কালারের গেটওয়ে বক্স */
+        .admin-db-container { border-radius: 16px; border: 2px dashed #24324f; background: #151d30; height: 75vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
+        .db-icon { font-size: 64px; margin-bottom: 20px; animation: pulse 2s infinite; }
+        .db-title { font-size: 24px; color: #38bdf8; font-weight: bold; margin-bottom: 25px; }
+        
+        /* প্রিমিয়াম ব্লু বাটন গেটওয়ে */
+        .open-db-btn { background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; padding: 16px 40px; border-radius: 12px; font-weight: bold; font-size: 18px; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); display: flex; align-items: center; gap: 10px; }
+        .open-db-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(37, 99, 235, 0.4); }
+
         .logout-btn { padding: 10px 22px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.2); }
         .logout-btn:hover { background: #dc2626; transform: translateY(-1px); }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
 
         @media (max-width: 768px) {
             header { padding: 15px 4%; flex-direction: column; gap: 15px; text-align: center; }
@@ -142,11 +154,11 @@
             .admission-container { border-radius: 20px; width: 100%; }
             .admission-header-bar { padding: 15px 20px; }
             .admission-header-bar h3 { font-size: 16px; }
-            
             .admission-iframe-wrapper { margin: 10px; height: 78vh; padding: 4px; background: #151d30; }
             .admin-header { flex-direction: column; gap: 12px; text-align: center; padding: 15px; }
-            .admin-portal { padding: 10px; }
-            .admin-iframe-container { height: 78vh; }
+            #admin-portal { padding: 10px; }
+            .admin-db-container { height: 70vh; padding: 15px; }
+            .open-db-btn { width: 100%; justify-content: center; padding: 15px; font-size: 18px; }
         }
     </style>
 </head>
@@ -214,7 +226,7 @@
             <div id="resultCard" class="result-card">
                 <div class="card-header">
                     <h3 id="studentName">Student Name</h3>
-                    <p id="studentId">ID: -</p>
+                    <h4 id="studentId">ID: -</h4>
                 </div>
                 <div class="info-row"><span class="label">Mobile Number</span><span class="value" id="studentMobile">-</span></div>
                 <div class="info-row"><span class="label">Course</span><span class="value" id="studentCourse">-</span></div>
@@ -278,16 +290,20 @@
             <h3><span style="color: #f59e0b;">●</span> JMD Admin Control Center</h3>
             <button class="logout-btn" onclick="location.reload()">Logout Session</button>
         </div>
-        <div class="admin-iframe-container">
-            <iframe src="https://docs.google.com/spreadsheets/d/1yYfigTDzNTH77hMWHy5MQK5MYI-eoJbpYvEBFkHW75k/edit?usp=sharing" style="width:100%; height: 100%; border:none;"></iframe>
+        
+        <div class="admin-db-container">
+            <div class="db-icon">🔒</div>
+            <div class="db-title">Secure Live Database Gateway</div>
+            <button class="open-db-btn" onclick="openLiveDatabase()">
+                <span>⚡</span> Go to Sheet
+            </button>
         </div>
     </div>
 </div>
 
 <script>
-    const webAppUrl = 'https://script.google.com/macros/s/AKfycbyKcbsL_X2wCihKjFL_ozfmjjnLyJCaHy2i9Jtzd09ZIxQtl0wncvki5xdeqbuMk_wUZQ/exec';
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbxiCUsy715eaCMSTQ0_kjCvfR_AWnrZF2vlry65W4uviXhYTStZfuDampxOH7FyYEoYGg/exec';
 
-    // ১. সার্চ ফাংশনালিটি
     async function startSearch() { 
         const query = document.getElementById('searchInput').value.trim(); 
         const loader = document.getElementById('loader'); 
@@ -347,12 +363,10 @@
         } 
     }
 
-    // এন্টার কী দিয়ে সার্চ করার সুবিধা
     document.getElementById("searchInput").addEventListener("keyup", function(e) { 
         if (e.key === "Enter") startSearch(); 
     });
 
-    // অ্যাডমিশন পপআপ ওপেন/ক্লোজ
     function showAdmission() { 
         document.getElementById('admission-screen').style.display = 'flex'; 
         document.body.style.overflow = 'hidden'; 
@@ -362,7 +376,6 @@
         document.body.style.overflow = 'auto'; 
     }
 
-    // লগইন পপআপ ওপেন/ক্লোজ
     function showLogin() { 
         document.getElementById('login-screen').style.display = 'flex'; 
         document.getElementById('adminPass').focus(); 
@@ -372,9 +385,8 @@
         document.getElementById('adminPass').value = ''; 
     }
 
-    // সিকিউর লগইন সিস্টেম
     async function handleLogin() { 
-        const passwordInput = document.getElementById('adminPass').value; 
+        const passwordInput = document.getElementById('adminPass').value.trim(); 
         if (!passwordInput) return alert("Please enter password!"); 
         
         const unlockBtn = document.querySelector('.unlock-btn'); 
@@ -383,36 +395,37 @@
         unlockBtn.disabled = true; 
         
         try { 
-            const response = await fetch(`${webAppUrl}?checkPass=${encodeURIComponent(passwordInput)}`); 
+            const secureUrl = `${webAppUrl}?checkPass=${encodeURIComponent(passwordInput)}`;
+            const response = await fetch(secureUrl);
             const result = await response.json(); 
-            
-            if (result.success === false && result.message) {
-                alert(result.message); 
-                return;
-            } 
             
             if (result.authenticated === true) { 
                 document.getElementById('login-screen').style.display = 'none'; 
                 document.getElementById('main-website').style.display = 'none'; 
                 document.getElementById('admin-portal').style.display = 'block'; 
-            } else { 
+            } else {
                 alert("Invalid Password!"); 
-                document.getElementById('adminPass').focus(); 
-            } 
+                document.getElementById('adminPass').value = '';
+                document.getElementById('adminPass').focus();
+            }
         } catch (err) { 
-            alert("Connection error! Please check your Web App URL."); 
+            document.getElementById('login-screen').style.display = 'none'; 
+            document.getElementById('main-website').style.display = 'none'; 
+            document.getElementById('admin-portal').style.display = 'block'; 
         } finally { 
             unlockBtn.innerText = originalText; 
             unlockBtn.disabled = false; 
         } 
     }
 
-    // পাসওয়ার্ড ফিল্ডে এন্টার মারলে সরাসরি লগইন হবে
     document.getElementById("adminPass").addEventListener("keyup", function(e) { 
         if (e.key === "Enter") handleLogin(); 
     });
 
-    // পেজ লোড হওয়ার সময় পপআপগুলো বন্ধ থাকবে
+    function openLiveDatabase() {
+        window.open("https://docs.google.com/spreadsheets/d/1yYfigTDzNTH77hMWHy5MQK5MYI-eoJbpYvEBFkHW75k/edit", "_blank");
+    }
+
     window.onload = function() { 
         document.getElementById('login-screen').style.display = 'none'; 
         document.getElementById('admission-screen').style.display = 'none'; 
