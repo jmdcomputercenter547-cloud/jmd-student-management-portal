@@ -302,133 +302,134 @@
 </div>
 
 <script>
-    const webAppUrl = 'https://script.google.com/macros/s/AKfycbxy5pc37HmpwRkWmyewWklXv4SNGgXNhzikUeSQRLSdN6tIGJuMvnzK16nOIgo-MdB81Q/exec';
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbz5QDI-V5jnNS4oYg6Soywniled3dTQ96KNr_pEGjGlChpEPa9UCI_KQbYKRgPcuLlhmg/exec';
 
-    async function startSearch() { 
-        const query = document.getElementById('searchInput').value.trim(); 
-        const loader = document.getElementById('loader'); 
-        const error = document.getElementById('error'); 
-        const card = document.getElementById('resultCard'); 
+    async function startSearch() {  
+        const query = document.getElementById('searchInput').value.trim();  
+        const loader = document.getElementById('loader');  
+        const error = document.getElementById('error');  
+        const card = document.getElementById('resultCard');  
         
-        if (!query) return alert("Please enter a name or mobile number!"); 
+        if (!query) return alert("Please enter a name or mobile number!");  
         
-        loader.style.display = 'block'; 
-        error.style.display = 'none'; 
-        card.style.display = 'none'; 
+        loader.style.display = 'block';  
+        error.style.display = 'none';  
+        card.style.display = 'none';  
         
-        try { 
-            const response = await fetch(`${webAppUrl}?q=${encodeURIComponent(query)}`); 
-            const result = await response.json(); 
+        try {  
+            const response = await fetch(`${webAppUrl}?q=${encodeURIComponent(query)}`);  
+            const result = await response.json();  
             
-            if (result.message && result.message.includes("স্থগিত")) { 
-                loader.style.display = 'none'; 
-                error.innerText = result.message; 
-                error.style.display = 'block'; 
-                return; 
-            } 
+            if (result.message && result.message.includes("স্থগিত")) {  
+                loader.style.display = 'none';  
+                error.innerText = result.message;  
+                error.style.display = 'block';  
+                return;  
+            }  
             
-            if (!result.success) { 
-                loader.style.display = 'none'; 
-                error.innerText = "No records found! Please check your spelling or mobile number and try again."; 
-                error.style.display = 'block'; 
+            if (!result.success) {  
+                loader.style.display = 'none';  
+                error.innerText = "No records found! Please check your spelling or mobile number and try again.";  
+                error.style.display = 'block';  
                 return;
-            } 
+            }  
             
-            const student = result.data; 
-            document.getElementById('studentName').innerText = student.name; 
-            document.getElementById('studentId').innerText = "ID: " + student.id; 
-            document.getElementById('studentMobile').innerText = student.mobile; 
-            document.getElementById('studentCourse').innerText = student.course; 
-            document.getElementById('studentAdmission').innerText = student.admission || "N/A"; 
-            document.getElementById('studentAttendance').innerText = (student.totalAttendance || 0) + " Days"; 
+            const student = result.data;  
+            document.getElementById('studentName').innerText = student.name;  
+            document.getElementById('studentId').innerText = "ID: " + student.id;  
+            document.getElementById('studentMobile').innerText = student.mobile;  
+            document.getElementById('studentCourse').innerText = student.course;  
+            document.getElementById('studentAdmission').innerText = student.admission || "N/A";  
+            document.getElementById('studentAttendance').innerText = (student.totalAttendance || 0) + " Days";  
             
-            const payBadge = document.getElementById('studentPayment'); 
-            if (student.lastPayment === "No Record" || !student.lastPayment) { 
-                payBadge.innerText = "No Record"; 
-                payBadge.className = "badge unpaid"; 
-            } else { 
-                let paymentDisplay = student.lastPayment; 
-                if (student.lastPaymentDate && student.lastPaymentDate !== "N/A") { 
-                    paymentDisplay += " (" + student.lastPaymentDate + ")"; 
-                } 
-                payBadge.innerText = paymentDisplay; 
-                payBadge.className = "badge paid"; 
-            } 
+            const payBadge = document.getElementById('studentPayment');  
+            if (student.lastPayment === "No Record" || !student.lastPayment) {  
+                payBadge.innerText = "No Record";  
+                payBadge.className = "badge unpaid";  
+            } else {  
+                let paymentDisplay = student.lastPayment;  
+                if (student.lastPaymentDate && student.lastPaymentDate !== "N/A") {  
+                    paymentDisplay += " (" + student.lastPaymentDate + ")";  
+                }  
+                payBadge.innerText = paymentDisplay;  
+                payBadge.className = "badge paid";  
+            }  
             
-            loader.style.display = 'none'; 
-            card.style.display = 'block'; 
-        } catch (err) { 
-            loader.style.display = 'none'; 
-            error.style.display = 'block'; 
-        } 
+            loader.style.display = 'none';  
+            card.style.display = 'block';  
+        } catch (err) {  
+            loader.style.display = 'none';  
+            error.style.display = 'block';  
+        }  
     }
 
-    document.getElementById("searchInput").addEventListener("keyup", function(e) { 
-        if (e.key === "Enter") startSearch(); 
+    document.getElementById("searchInput").addEventListener("keyup", function(e) {  
+        if (e.key === "Enter") startSearch();  
     });
 
-    function showAdmission() { 
-        document.getElementById('admission-screen').style.display = 'flex'; 
-        document.body.style.overflow = 'hidden'; 
-    } 
-    function hideAdmission() { 
-        document.getElementById('admission-screen').style.display = 'none'; 
-        document.body.style.overflow = 'auto'; 
+    function showAdmission() {  
+        document.getElementById('admission-screen').style.display = 'flex';  
+        document.body.style.overflow = 'hidden';  
+    }  
+    function hideAdmission() {  
+        document.getElementById('admission-screen').style.display = 'none';  
+        document.body.style.overflow = 'auto';  
     }
 
-    function showLogin() { 
-        document.getElementById('login-screen').style.display = 'flex'; 
-        document.getElementById('adminPass').focus(); 
-    } 
-    function hideLogin() { 
-        document.getElementById('login-screen').style.display = 'none'; 
-        document.getElementById('adminPass').value = ''; 
+    function showLogin() {  
+        document.getElementById('login-screen').style.display = 'flex';  
+        document.getElementById('adminPass').focus();  
+    }  
+    function hideLogin() {  
+        document.getElementById('login-screen').style.display = 'none';  
+        document.getElementById('adminPass').value = '';  
     }
 
-    async function handleLogin() { 
-        const passwordInput = document.getElementById('adminPass').value.trim(); 
-        if (!passwordInput) return alert("Please enter password!"); 
+    async function handleLogin() {  
+        const passwordInput = document.getElementById('adminPass').value.trim();  
+        if (!passwordInput) return alert("Please enter password!");  
         
-        const unlockBtn = document.querySelector('.unlock-btn'); 
-        const originalText = unlockBtn.innerText; 
-        unlockBtn.innerText = "Verifying..."; 
-        unlockBtn.disabled = true; 
+        const unlockBtn = document.querySelector('.unlock-btn');  
+        const originalText = unlockBtn.innerText;  
+        unlockBtn.innerText = "Verifying...";  
+        unlockBtn.disabled = true;  
         
-        try { 
+        try {  
             const secureUrl = `${webAppUrl}?checkPass=${encodeURIComponent(passwordInput)}`;
             const response = await fetch(secureUrl);
-            const result = await response.json(); 
+            const result = await response.json();  
             
-            if (result.authenticated === true) { 
-                document.getElementById('login-screen').style.display = 'none'; 
-                document.getElementById('main-website').style.display = 'none'; 
-                document.getElementById('admin-portal').style.display = 'block'; 
+            if (result.authenticated === true) {  
+                document.getElementById('login-screen').style.display = 'none';  
+                document.getElementById('main-website').style.display = 'none';  
+                document.getElementById('admin-portal').style.display = 'block';  
             } else {
-                alert("Invalid Password!"); 
+                // এখানে পরিবর্তন করা হয়েছে যাতে সার্ভারের পাঠানো মেসেজটি দেখায়
+                alert(result.message || "Invalid Password!");  
                 document.getElementById('adminPass').value = '';
                 document.getElementById('adminPass').focus();
             }
-        } catch (err) { 
-            document.getElementById('login-screen').style.display = 'none'; 
-            document.getElementById('main-website').style.display = 'none'; 
-            document.getElementById('admin-portal').style.display = 'block'; 
-        } finally { 
-            unlockBtn.innerText = originalText; 
-            unlockBtn.disabled = false; 
-        } 
+        } catch (err) {  
+            document.getElementById('login-screen').style.display = 'none';  
+            document.getElementById('main-website').style.display = 'none';  
+            document.getElementById('admin-portal').style.display = 'block';  
+        } finally {  
+            unlockBtn.innerText = originalText;  
+            unlockBtn.disabled = false;  
+        }  
     }
 
-    document.getElementById("adminPass").addEventListener("keyup", function(e) { 
-        if (e.key === "Enter") handleLogin(); 
+    document.getElementById("adminPass").addEventListener("keyup", function(e) {  
+        if (e.key === "Enter") handleLogin();  
     });
 
     function openLiveDatabase() {
         window.open("https://docs.google.com/spreadsheets/d/1yYfigTDzNTH77hMWHy5MQK5MYI-eoJbpYvEBFkHW75k/edit", "_blank");
     }
 
-    window.onload = function() { 
-        document.getElementById('login-screen').style.display = 'none'; 
-        document.getElementById('admission-screen').style.display = 'none'; 
+    window.onload = function() {  
+        document.getElementById('login-screen').style.display = 'none';  
+        document.getElementById('admission-screen').style.display = 'none';  
     }
 </script>
 </body>
