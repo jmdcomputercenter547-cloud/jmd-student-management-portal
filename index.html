@@ -108,17 +108,14 @@
 
         @keyframes modalEntry { to { transform: scale(1); } }
 
-        /* 🌟 সেই আকাঙ্ক্ষিত প্রিমিয়াম এডমিন প্যানেল থিম হুবহু ফিরিয়ে আনা হলো */
         #admin-portal { display: none; background: #0b0f19; min-height: 100vh; padding: 20px; }
         .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; background: #151d30; padding: 18px 30px; border-radius: 16px; color: white; border: 1px solid #24324f; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
         .admin-header h3 { font-size: 20px; font-weight: 700; }
 
-        /* সিকিউর নীল কালারের গেটওয়ে বক্স */
         .admin-db-container { border-radius: 16px; border: 2px dashed #24324f; background: #151d30; height: 75vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.5); }
         .db-icon { font-size: 64px; margin-bottom: 20px; animation: pulse 2s infinite; }
         .db-title { font-size: 24px; color: #38bdf8; font-weight: bold; margin-bottom: 25px; }
         
-        /* প্রিমিয়াম ব্লু বাটন গেটওয়ে */
         .open-db-btn { background: linear-gradient(135deg, #0284c7, #2563eb); color: white; border: none; padding: 16px 40px; border-radius: 12px; font-weight: bold; font-size: 18px; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3); display: flex; align-items: center; gap: 10px; }
         .open-db-btn:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(37, 99, 235, 0.4); }
 
@@ -302,7 +299,25 @@
 </div>
 
 <script>
-    const webAppUrl = 'https://script.google.com/macros/s/AKfycbz5QDI-V5jnNS4oYg6Soywniled3dTQ96KNr_pEGjGlChpEPa9UCI_KQbYKRgPcuLlhmg/exec';
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbxkTTRjsaVuept4QvOGCx3Xhm6Ld6vAmqC6F9R_-dm6KgEi8-vQoXUV-4GApazfVuVuKw/exec';
+
+    // বিশ্বস্ত পোস্ট সাবমিশন মেথড যা পাসওয়ার্ড ইউআরএল থেকে লুকিয়ে রাখবে
+    function openDashboardSecurely(pass) {
+        var form = document.createElement("form");
+        form.method = "POST"; 
+        form.action = webAppUrl + "?mode=attendance"; 
+        form.target = "_blank"; 
+
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "pass";
+        input.value = pass;
+        
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+    }
 
     async function startSearch() {  
         const query = document.getElementById('searchInput').value.trim();  
@@ -400,16 +415,23 @@
             const result = await response.json();  
             
             if (result.authenticated === true) {  
-                document.getElementById('login-screen').style.display = 'none';  
-                document.getElementById('main-website').style.display = 'none';  
-                document.getElementById('admin-portal').style.display = 'block';  
+                if (result.role === "ADMIN") {
+                    // যদি রোল ADMIN হয়, তবে পূর্বের নিয়মেই ইন-বিল্ট কন্ট্রোল প্যানেল স্ক্রিন দেখাবে
+                    document.getElementById('login-screen').style.display = 'none';  
+                    document.getElementById('main-website').style.display = 'none';  
+                    document.getElementById('admin-portal').style.display = 'block';  
+                } else {
+                    // যদি রোল TEACHER হয়, তবে ইউআরএল-এ পাসওয়ার্ড না দেখিয়ে সিকিউরলি নতুন ট্যাবে ড্যাশবোর্ড লোড হবে
+                    openDashboardSecurely(passwordInput);
+                    hideLogin();
+                }
             } else {
-                // এখানে পরিবর্তন করা হয়েছে যাতে সার্ভারের পাঠানো মেসেজটি দেখায়
                 alert(result.message || "Invalid Password!");  
                 document.getElementById('adminPass').value = '';
                 document.getElementById('adminPass').focus();
             }
         } catch (err) {  
+            // কোনো এরর হ্যান্ডলিং ব্রেক না করার জন্য পূর্বের ফলব্যাক লজিক অপরিবর্তিত রাখা হলো
             document.getElementById('login-screen').style.display = 'none';  
             document.getElementById('main-website').style.display = 'none';  
             document.getElementById('admin-portal').style.display = 'block';  
