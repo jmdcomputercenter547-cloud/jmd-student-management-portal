@@ -106,7 +106,6 @@
         .close-modal-btn { background: #ef4444; color: white; border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25); }
         .close-modal-btn:hover { background: #dc2626; transform: scale(1.05); }
 
-        /* কাস্টম ক্যানসেল এন্ড ব্যাক বাটন স্টাইল */
         .cancel-back-btn { background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25); transition: 0.2s; }
         .cancel-back-btn:hover { background: #b91c1c; transform: scale(1.03); }
 
@@ -312,27 +311,30 @@
         </div>
     </div>
 </div>
-
 <script>
-    const webAppUrl = 'https://script.google.com/macros/s/AKfycbyXXxf2nf66Ac4T0x1K9qstexlrs995lj5qSwANfn9iPzQiF-hzS2suTZHRDeIOlUjopw/exec';
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbzcDEhgeIKc0D7I-1RBh0eK8MNkYW23Mx0Dy5q0ERZjGl7LRdCxSepPxur4hFl1JjcnZQ/exec';
+    
+    // গ্লোবাল ভ্যারিয়েবল যা ডেটাবেস ইউআরএলকে কোড থেকে আড়াল রাখবে
+    let securedSheetUrl = ""; 
+    let sessionTimeoutTimer;
 
-    // শিক্ষক পোর্টাল মোডাল কন্ট্রোল ফাংশন
+    // সেশন টাইমআউট সময় - এখানে ১৫ মিনিট দেওয়া হলো (১৫ মিনিট * ৬০ সেকেন্ড * ১০০০ মিলিসেকেন্ড)
+    const SESSION_TIMEOUT_LIMIT = 15 * 60 * 1000; 
+
     function showTeacherPortal() {
         document.getElementById('teacher-portal-screen').style.display = 'flex';
         document.body.style.overflow = 'hidden';
     }
     function hideTeacherPortal() {
         document.getElementById('teacher-portal-screen').style.display = 'none';
-        document.getElementById('teacher-iframe-container').innerHTML = ''; // ক্লীন আপ ফ্রেম
+        document.getElementById('teacher-iframe-container').innerHTML = ''; 
         document.body.style.overflow = 'auto';
     }
 
-    // বিশ্বস্ত পোস্ট সাবমিশন মেথড যা পাসওয়ার্ড আড়াল রেখে সুন্দর ওভারলে মোডালে লোড করাবে
     function openDashboardSecurely(pass) {
         var container = document.getElementById('teacher-iframe-container');
-        container.innerHTML = ''; // পুরনো ডাটা রিমুভ
+        container.innerHTML = ''; 
 
-        // একটি ডাইনামিক ফ্রেম তৈরি
         var iframe = document.createElement('iframe');
         iframe.name = 'secure_teacher_frame';
         iframe.width = '100%';
@@ -340,7 +342,6 @@
         iframe.frameBorder = '0';
         container.appendChild(iframe);
 
-        // ফর্ম সাবমিশন টার্গেট এই ফ্রেমে সেট করা হয়েছে
         var form = document.createElement("form");
         form.method = "POST"; 
         form.action = webAppUrl + "?mode=attendance"; 
@@ -356,8 +357,8 @@
         form.submit();
         document.body.removeChild(form);
 
-        // মোডাল স্ক্রিন ওপেন করা হলো
         showTeacherPortal();
+        startSessionCountdown();
     }
 
     async function startSearch() {  
@@ -457,9 +458,17 @@
             
             if (result.authenticated === true) {  
                 if (result.role === "ADMIN") {
+                    securedSheetUrl = result.targetUrl; 
+                    
+                    // সেশন স্টোরেজে ডেটা সেভ করা হচ্ছে
+                    sessionStorage.setItem("isAdminLoggedIn", "true");
+                    sessionStorage.setItem("storedSheetUrl", securedSheetUrl);
+
                     document.getElementById('login-screen').style.display = 'none';  
                     document.getElementById('main-website').style.display = 'none';  
                     document.getElementById('admin-portal').style.display = 'block';  
+                    
+                    startSessionCountdown();
                 } else {
                     openDashboardSecurely(passwordInput);
                     hideLogin();
@@ -470,9 +479,8 @@
                 document.getElementById('adminPass').focus();
             }
         } catch (err) {  
-            document.getElementById('login-screen').style.display = 'none';  
-            document.getElementById('main-website').style.display = 'none';  
-            document.getElementById('admin-portal').style.display = 'block';  
+            console.error(err);
+            alert("সিস্টেম এরর বা নেটওয়ার্ক সমস্যা! অনুগ্রহ করে আবার চেষ্টা করুন।");
         } finally {  
             unlockBtn.innerText = originalText;  
             unlockBtn.disabled = false;  
@@ -484,13 +492,40 @@
     });
 
     function openLiveDatabase() {
-        window.open("https://docs.google.com/spreadsheets/d/1yYfigTDzNTH77hMWHy5MQK5MYI-eoJbpYvEBFkHW75k/edit", "_blank");
+        if(securedSheetUrl) {
+            window.open(securedSheetUrl, "_blank");
+        } else {
+            alert("অনুমতি নেই বা সেশন শেষ হয়ে গেছে!");
+        }
     }
+
+    function startSessionCountdown() {
+        clearTimeout(sessionTimeoutTimer);
+        sessionTimeoutTimer = setTimeout(logoutSession, SESSION_TIMEOUT_LIMIT);
+    }
+
+    function logoutSession() {
+        clearTimeout(sessionTimeoutTimer);
+        sessionStorage.clear();
+        securedSheetUrl = "";
+        alert("নিরাপত্তার কারণে আপনার সেশন শেষ হয়ে গেছে! অনুগ্রহ করে আবার লগইন করুন।");
+        location.reload();
+    }
+
+    window.onmousemove = startSessionCountdown;
+    window.onkeydown = startSessionCountdown;
 
     window.onload = function() {  
         document.getElementById('login-screen').style.display = 'none';  
         document.getElementById('admission-screen').style.display = 'none';  
         document.getElementById('teacher-portal-screen').style.display = 'none';  
+        
+        if (sessionStorage.getItem("isAdminLoggedIn") === "true") {
+            securedSheetUrl = sessionStorage.getItem("storedSheetUrl");
+            document.getElementById('main-website').style.display = 'none';  
+            document.getElementById('admin-portal').style.display = 'block';  
+            startSessionCountdown();
+        }
     }
 </script>
 </body>
