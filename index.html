@@ -103,8 +103,12 @@
         .admission-iframe-wrapper { background: #151d30; padding: 10px; margin: 20px; border-radius: 16px; overflow: hidden; height: 75vh; border: 2px solid #24324f; box-shadow: inset 0 4px 10px rgba(0,0,0,0.4); -webkit-overflow-scrolling: touch; }
         .admission-iframe-wrapper iframe { border-radius: 12px; background: #ffffff; }
         
-        .close-modal-btn { background: #ef4444; color: white; border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.2s; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25); }
+        .close-modal-btn { background: #ef4444; color: white; border: none; width: 36px; height: 36px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 16px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25); }
         .close-modal-btn:hover { background: #dc2626; transform: scale(1.05); }
+
+        /* কাস্টম ক্যানসেল এন্ড ব্যাক বাটন স্টাইল */
+        .cancel-back-btn { background: #dc2626; color: white; border: none; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-weight: bold; font-size: 14px; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(239, 68, 68, 0.25); transition: 0.2s; }
+        .cancel-back-btn:hover { background: #b91c1c; transform: scale(1.03); }
 
         @keyframes modalEntry { to { transform: scale(1); } }
 
@@ -271,6 +275,17 @@
     </div>
 </div>
 
+<div id="teacher-portal-screen" class="modal-overlay">
+    <div class="admission-container">
+        <div class="admission-header-bar">
+            <h3><span>●</span> JMD Teacher Portal | উপস্থিতি ব্যবস্থাপনা</h3>
+            <button class="cancel-back-btn" onclick="hideTeacherPortal()">✕ Cancel & Back</button>
+        </div>
+        <div class="admission-iframe-wrapper" id="teacher-iframe-container">
+        </div>
+    </div>
+</div>
+
 <div id="login-screen" class="modal-overlay">
     <div class="login-box">
         <h3>Staff Access Dashboard</h3>
@@ -299,14 +314,37 @@
 </div>
 
 <script>
-    const webAppUrl = 'https://script.google.com/macros/s/AKfycbwYJOclR3cCLSPW9_HM_b1XaQ6DONUlkJFB-h_HsWrXTryBI9dLOIGM_AgpOYms-m9obg/exec';
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbyXXxf2nf66Ac4T0x1K9qstexlrs995lj5qSwANfn9iPzQiF-hzS2suTZHRDeIOlUjopw/exec';
 
-    // বিশ্বস্ত পোস্ট সাবমিশন মেথড যা পাসওয়ার্ড ইউআরএল থেকে লুকিয়ে রাখবে
+    // শিক্ষক পোর্টাল মোডাল কন্ট্রোল ফাংশন
+    function showTeacherPortal() {
+        document.getElementById('teacher-portal-screen').style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+    }
+    function hideTeacherPortal() {
+        document.getElementById('teacher-portal-screen').style.display = 'none';
+        document.getElementById('teacher-iframe-container').innerHTML = ''; // ক্লীন আপ ফ্রেম
+        document.body.style.overflow = 'auto';
+    }
+
+    // বিশ্বস্ত পোস্ট সাবমিশন মেথড যা পাসওয়ার্ড আড়াল রেখে সুন্দর ওভারলে মোডালে লোড করাবে
     function openDashboardSecurely(pass) {
+        var container = document.getElementById('teacher-iframe-container');
+        container.innerHTML = ''; // পুরনো ডাটা রিমুভ
+
+        // একটি ডাইনামিক ফ্রেম তৈরি
+        var iframe = document.createElement('iframe');
+        iframe.name = 'secure_teacher_frame';
+        iframe.width = '100%';
+        iframe.height = '100%';
+        iframe.frameBorder = '0';
+        container.appendChild(iframe);
+
+        // ফর্ম সাবমিশন টার্গেট এই ফ্রেমে সেট করা হয়েছে
         var form = document.createElement("form");
         form.method = "POST"; 
         form.action = webAppUrl + "?mode=attendance"; 
-        form.target = "_blank"; 
+        form.target = "secure_teacher_frame"; 
 
         var input = document.createElement("input");
         input.type = "hidden";
@@ -317,6 +355,9 @@
         document.body.appendChild(form);
         form.submit();
         document.body.removeChild(form);
+
+        // মোডাল স্ক্রিন ওপেন করা হলো
+        showTeacherPortal();
     }
 
     async function startSearch() {  
@@ -416,12 +457,10 @@
             
             if (result.authenticated === true) {  
                 if (result.role === "ADMIN") {
-                    // যদি রোল ADMIN হয়, তবে পূর্বের নিয়মেই ইন-বিল্ট কন্ট্রোল প্যানেল স্ক্রিন দেখাবে
                     document.getElementById('login-screen').style.display = 'none';  
                     document.getElementById('main-website').style.display = 'none';  
                     document.getElementById('admin-portal').style.display = 'block';  
                 } else {
-                    // যদি রোল TEACHER হয়, তবে ইউআরএল-এ পাসওয়ার্ড না দেখিয়ে সিকিউরলি নতুন ট্যাবে ড্যাশবোর্ড লোড হবে
                     openDashboardSecurely(passwordInput);
                     hideLogin();
                 }
@@ -431,7 +470,6 @@
                 document.getElementById('adminPass').focus();
             }
         } catch (err) {  
-            // কোনো এরর হ্যান্ডলিং ব্রেক না করার জন্য পূর্বের ফলব্যাক লজিক অপরিবর্তিত রাখা হলো
             document.getElementById('login-screen').style.display = 'none';  
             document.getElementById('main-website').style.display = 'none';  
             document.getElementById('admin-portal').style.display = 'block';  
@@ -452,6 +490,7 @@
     window.onload = function() {  
         document.getElementById('login-screen').style.display = 'none';  
         document.getElementById('admission-screen').style.display = 'none';  
+        document.getElementById('teacher-portal-screen').style.display = 'none';  
     }
 </script>
 </body>
