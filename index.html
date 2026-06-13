@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JMD Computer Center | Home & Student Portal</title>
+    
+    <title>JMD Computer Center Payradanga | Home & Student Portal</title>
+    <meta name="description" content="Official Student Portal of JMD Computer Center, Payradanga, Nadia. Check course status, attendance, live exam updates, and fee details online. Join modern IT classes.">
+    <meta name="keywords" content="JMD Computer, JMD Computer Center, JMD Computer Payradanga, Computer Center Payradanga, Anup Saha JMD, Saikat Joardar, Computer training Nadia, Best IT institute Payradanga">
+    <meta name="author" content="Saikat Joardar">
+    <meta name="robots" content="index, follow">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; scroll-behavior: smooth; }
         body { background: #0f172a; color: #f1f5f9; min-height: 100vh; overflow-x: hidden; }
@@ -299,7 +304,7 @@
     <div style="max-width: 1500px; margin: auto;">
         <div class="admin-header">
             <h3><span style="color: #f59e0b;">●</span> JMD Admin Control Center</h3>
-            <button class="logout-btn" onclick="location.reload()">Logout Session</button>
+            <button class="logout-btn" onclick="logoutSessionWithoutAlert()">Logout Session</button>
         </div>
         
         <div class="admin-db-container">
@@ -312,13 +317,11 @@
     </div>
 </div>
 <script>
-    const webAppUrl = 'https://script.google.com/macros/s/AKfycbzcDEhgeIKc0D7I-1RBh0eK8MNkYW23Mx0Dy5q0ERZjGl7LRdCxSepPxur4hFl1JjcnZQ/exec';
+    const webAppUrl = 'https://script.google.com/macros/s/AKfycbyCl5R3bjeuIU8K3dJ9WRqqwEqJWNLhsIbjM-A4E83Q-hmORQGTOuTM1Yrv_Yez3uqiEg/exec';
     
-    // গ্লোবাল ভ্যারিয়েবল যা ডেটাবেস ইউআরএলকে কোড থেকে আড়াল রাখবে
     let securedSheetUrl = ""; 
     let sessionTimeoutTimer;
 
-    // সেশন টাইমআউট সময় - এখানে ১৫ মিনিট দেওয়া হলো (১৫ মিনিট * ৬০ সেকেন্ড * ১০০০ মিলিসেকেন্ড)
     const SESSION_TIMEOUT_LIMIT = 15 * 60 * 1000; 
 
     function showTeacherPortal() {
@@ -460,7 +463,6 @@
                 if (result.role === "ADMIN") {
                     securedSheetUrl = result.targetUrl; 
                     
-                    // সেশন স্টোরেজে ডেটা সেভ করা হচ্ছে
                     sessionStorage.setItem("isAdminLoggedIn", "true");
                     sessionStorage.setItem("storedSheetUrl", securedSheetUrl);
 
@@ -504,12 +506,21 @@
         sessionTimeoutTimer = setTimeout(logoutSession, SESSION_TIMEOUT_LIMIT);
     }
 
+    // অটোমেটিক ১৫ মিনিট পর টাইমআউট হলে এই অ্যালার্ট সহ লগআউট কল হবে
     function logoutSession() {
         clearTimeout(sessionTimeoutTimer);
         sessionStorage.clear();
         securedSheetUrl = "";
         alert("নিরাপত্তার কারণে আপনার সেশন শেষ হয়ে গেছে! অনুগ্রহ করে আবার লগইন করুন।");
         location.reload();
+    }
+
+    // নিজে থেকে লাল বাটনে ক্লিক করে লগআউট করার জন্য (কোনো বিরক্তিকর পপ-আপ অ্যালার্ট আসবে না)
+    function logoutSessionWithoutAlert() {
+        clearTimeout(sessionTimeoutTimer);
+        sessionStorage.clear(); // সেশন মেমোরি ক্লিয়ার করা হলো
+        securedSheetUrl = "";
+        location.reload(); // এবার রিফ্রেশ হলে সফলভাবে মূল ওয়েবসাইটে ব্যাক করবে
     }
 
     window.onmousemove = startSessionCountdown;
