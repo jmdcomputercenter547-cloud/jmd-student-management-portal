@@ -445,49 +445,65 @@
         document.getElementById('adminPass').value = '';  
     }
 
-    async function handleLogin() {  
-        const passwordInput = document.getElementById('adminPass').value.trim();  
-        if (!passwordInput) return alert("Please enter password!");  
+   async function handleLogin() {  
+    const passwordInput = document.getElementById('adminPass').value.trim();  
+    if (!passwordInput) return alert("Please enter password!");  
+    
+    const unlockBtn = document.querySelector('.unlock-btn');  
+    const originalText = unlockBtn.innerText;  
+    unlockBtn.innerText = "Verifying...";  
+    unlockBtn.disabled = true;  
+    
+    try {  
+        const secureUrl = `${webAppUrl}?checkPass=${encodeURIComponent(passwordInput)}`;
+        const response = await fetch(secureUrl);
         
-        const unlockBtn = document.querySelector('.unlock-btn');  
-        const originalText = unlockBtn.innerText;  
-        unlockBtn.innerText = "Verifying...";  
-        unlockBtn.disabled = true;  
-        
-        try {  
-            const secureUrl = `${webAppUrl}?checkPass=${encodeURIComponent(passwordInput)}`;
-            const response = await fetch(secureUrl);
-            const result = await response.json();  
-            
-            if (result.authenticated === true) {  
-                if (result.role === "ADMIN") {
-                    securedSheetUrl = result.targetUrl; 
-                    
-                    sessionStorage.setItem("isAdminLoggedIn", "true");
-                    sessionStorage.setItem("storedSheetUrl", securedSheetUrl);
+        // যদি ব্যাকএন্ড থেকে সাবস্ক্রিপশন এক্সপায়ারের HTML পেজ আসে
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("text/html")) {
+            hideLogin();
+            openDashboardSecurely(passwordInput);
+            return;
+        }
 
-                    document.getElementById('login-screen').style.display = 'none';  
-                    document.getElementById('main-website').style.display = 'none';  
-                    document.getElementById('admin-portal').style.display = 'block';  
-                    
-                    startSessionCountdown();
-                } else {
-                    openDashboardSecurely(passwordInput);
-                    hideLogin();
-                }
+        const result = await response.json();  
+        
+        if (result.message && result.message.includes("স্থগিত")) {
+            alert("Web API Alert: " + result.message);
+            return;
+        }
+
+        if (result.authenticated === true) {  
+            if (result.role === "ADMIN") {
+                securedSheetUrl = result.targetUrl; 
+                
+                sessionStorage.setItem("isAdminLoggedIn", "true");
+                sessionStorage.setItem("storedSheetUrl", securedSheetUrl);
+
+                document.getElementById('login-screen').style.display = 'none';  
+                document.getElementById('main-website').style.display = 'none';  
+                document.getElementById('admin-portal').style.display = 'block';  
+                
+                startSessionCountdown();
             } else {
-                alert(result.message || "Invalid Password!");  
-                document.getElementById('adminPass').value = '';
-                document.getElementById('adminPass').focus();
+                openDashboardSecurely(passwordInput);
+                hideLogin();
             }
-        } catch (err) {  
-            console.error(err);
-            alert("সিস্টেম এরর বা নেটওয়ার্ক সমস্যা! অনুগ্রহ করে আবার চেষ্টা করুন।");
-        } finally {  
-            unlockBtn.innerText = originalText;  
-            unlockBtn.disabled = false;  
-        }  
-    }
+        } else {
+            alert(result.message || "Invalid Password!");  
+            document.getElementById('adminPass').value = '';
+            document.getElementById('adminPass').focus();
+        }
+    } catch (err) {  
+        console.error(err);
+        // কোনো এরর বা টেম্পোরারি ব্লক থাকলে সরাসরি সিকিউর ফ্রেম লোড করবে
+        hideLogin();
+        openDashboardSecurely(passwordInput);
+    } finally {  
+        unlockBtn.innerText = originalText;  
+        unlockBtn.disabled = false;  
+    }  
+}
 
     document.getElementById("adminPass").addEventListener("keyup", function(e) {  
         if (e.key === "Enter") handleLogin();  
