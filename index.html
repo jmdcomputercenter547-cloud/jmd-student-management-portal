@@ -445,7 +445,7 @@
         document.getElementById('adminPass').value = '';  
     }
 
-   async function handleLogin() {  
+  async function handleLogin() {  
     const passwordInput = document.getElementById('adminPass').value.trim();  
     if (!passwordInput) return alert("Please enter password!");  
     
@@ -458,7 +458,7 @@
         const secureUrl = `${webAppUrl}?checkPass=${encodeURIComponent(passwordInput)}`;
         const response = await fetch(secureUrl);
         
-        // যদি ব্যাকএন্ড থেকে সাবস্ক্রিপশন এক্সপায়ারের HTML পেজ আসে
+        // ১. যদি ব্যাকএন্ড থেকে সাবস্ক্রিপশন এক্সপায়ারের সরাসরি HTML পেজ আসে
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("text/html")) {
             hideLogin();
@@ -468,8 +468,10 @@
 
         const result = await response.json();  
         
-        if (result.message && result.message.includes("স্থগিত")) {
-            alert("Web API Alert: " + result.message);
+        // ২. যদি মেসেজের ভেতর "স্থগিত" বা কোনো এলার্ট থাকে, পপ-আপ না দেখিয়ে সরাসরি ফুল স্ক্রিন লক পেজ ওপেন করবে
+        if (result.message && (result.message.includes("স্থগিত") || result.message.includes("Expired"))) {
+            hideLogin();
+            openDashboardSecurely(passwordInput);
             return;
         }
 
@@ -496,7 +498,7 @@
         }
     } catch (err) {  
         console.error(err);
-        // কোনো এরর বা টেম্পোরারি ব্লক থাকলে সরাসরি সিকিউর ফ্রেম লোড করবে
+        // ৩. কোনো কারণে ক্যাচ ব্লকে আসলেও কোনো পপ-আপ অ্যালার্ট হবে না, সরাসরি ফুল স্ক্রিন লোড হবে
         hideLogin();
         openDashboardSecurely(passwordInput);
     } finally {  
